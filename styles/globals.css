@@ -1,16 +1,96 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    html,
+    body {
+        @apply w-screen h-screen;
+        @apply bg-nord6 dark:bg-nord0;
+        @apply overflow-x-hidden;
+    }
+
+    p,
+    h1 {
+        @apply text-nord0 dark:text-nord6;
+    }
+
+    h1 {
+        @apply text-5xl;
+    }
+
+    h2 {
+        @apply text-4xl;
+    }
+
+    h3 {
+        @apply text-3xl;
+    }
+
+    h4 {
+        @apply text-2xl;
+    }
+
+    h5 {
+        @apply text-xl;
+    }
+
+    h6 {
+        @apply text-xl text-nord5 dark:text-nord1;
+    }
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
+@layer components {
+    .content {
+        @apply container mx-auto py-2;
+    }
 
-* {
-  box-sizing: border-box;
+    .title {
+        @apply text-center mt-6 mb-10;
+    }
+
+    .row {
+        @apply grid grid-cols-5 gap-4;
+        @apply max-w-sm md:max-w-md mx-auto;
+    }
+
+    .tile-container {
+        @apply grid grid-rows-2 gap-3;
+    }
+
+    .tile {
+        @apply border-2 border-nord3 dark:border-nord2 rounded-lg;
+        @apply bg-nord5 dark:bg-nord1;
+        @apply text-nord0 dark:text-nord6;
+        @apply flex justify-center items-center h-16 md:h-20;
+        @apply text-center text-3xl uppercase select-none;
+        @apply transition-colors ease-in-out duration-75;
+    }
+
+    .tile > span {
+        @apply p-0 lg:pb-1;
+    }
+
+    .tile-active {
+        @apply bg-nord6 dark:bg-nord2;
+        @apply border-nord9 dark:border-nord6;
+        @apply shadow-md dark:shadow-sm shadow-nord4 dark:shadow-nord1;
+    }
+
+    .tile-lock {
+        @apply bg-nord7 dark:text-nord6;
+    }
+
+    .tile-softlock {
+        @apply bg-nord13;
+    }
+
+    .tile-icon-buttons {
+        @apply w-full h-10 rounded-lg;
+        @apply bg-nord6 dark:bg-nord2;
+        @apply hover:bg-nord5 dark:hover:bg-nord3;
+        @apply border border-nord4 dark:border-nord2;
+        @apply drop-shadow-sm shadow-nord4 dark:shadow-nord1;
+        @apply transition-colors ease-in-out duration-100;
+    }
 }
