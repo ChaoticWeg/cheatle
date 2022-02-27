@@ -19,6 +19,10 @@ function Home() {
 
     const { dispatch } = useBoardState();
 
+    const onFindPress = React.useCallback(() => {
+        alert("WIP");
+    }, []);
+
     const onClearPress = React.useCallback(() => {
         dispatch?.({
             type: BSA_RESET,
@@ -86,9 +90,15 @@ function Home() {
             <h1 className="title">Hello</h1>
             <Row />
             <div className="absolute bottom-0 left-0 w-screen flex flex-col">
-                <div className="w-full lg:w-2/5 mx-auto p-2 mb-2">
-                    <button className="block ml-auto" onClick={onClearPress}>
+                <div className="w-full lg:w-2/5 mx-auto p-2 mb-2 flex">
+                    <button
+                        className="block mr-auto bg-nord11 hover:bg-nord15"
+                        onClick={onClearPress}
+                    >
                         Clear
+                    </button>
+                    <button className="block ml-auto" onClick={onFindPress}>
+                        Find
                     </button>
                 </div>
                 <div className="w-full lg:w-2/5 mx-auto">
