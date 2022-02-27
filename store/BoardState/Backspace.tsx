@@ -8,7 +8,13 @@ export function BoardStateBackspaceReducer(
     let editedRow = { ...rows[activeRow] };
     let { index } = editedRow;
 
-    if (index > 0) index -= 1;
+    if (index > 0) {
+        index--;
+    } else if (activeRow > 0) {
+        activeRow--;
+        index = 4;
+        editedRow = { ...rows[activeRow] };
+    }
 
     editedRow.index = index;
     editedRow.tiles[index] = { letter: "", lock: "no" };
