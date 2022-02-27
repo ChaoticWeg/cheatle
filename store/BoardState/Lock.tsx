@@ -29,5 +29,5 @@ export function BoardStateLockReducer(state: BoardState, action: BoardStateLockA
         ...rows.slice(rowIndex + 1)
     ];
 
-    return { ...state, rows: newRows, activeRow: rowIndex };
+    return { ...state, rows: newRows };
 }
