@@ -36,7 +36,6 @@ function Home() {
     const keyboard = React.useRef();
     const setKeyboardRef = React.useCallback((ref) => (keyboard.current = ref), []);
 
-    const [hideKeyboard, setHideKeyboard] = React.useState<boolean>(false);
     const [loading, setLoading] = React.useState<boolean>(false);
     const [words, setWords] = React.useState<string[]>([]);
 
@@ -90,10 +89,6 @@ function Home() {
             .catch((err) => alert(err.message))
             .finally(() => setLoading(false));
     }, [state?.rows]);
-
-    const onHidePress = React.useCallback(() => {
-        setHideKeyboard((hkb) => !hkb);
-    }, []);
 
     const onClearPress = React.useCallback(() => {
         setWords([]);
@@ -173,7 +168,7 @@ function Home() {
             {state?.rows?.map((row, i) => (
                 <Row key={i} index={i} />
             ))}
-            <WordList words={words} />
+            <WordList loading={loading} words={words} />
             <div className="keyboard-container">
                 <div className="w-full lg:w-2/5 mx-auto py-3 px-5 flex bg-nord4 dark:bg-nord2 rounded-md rounded-b-none">
                     <button

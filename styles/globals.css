@@ -126,4 +126,9 @@
         @apply col-span-4 lg:col-span-5;
         @apply text-nord3 dark:text-nord4;
     }
+
+    .word-list-loading {
+        @apply word-list-empty;
+        @apply dark:text-nord2 dark:shadow-md;
+    }
 }
