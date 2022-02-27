@@ -167,17 +167,6 @@ function Home() {
         };
     }, [onKeyDown]);
 
-    const keyboardContainerClassName = React.useMemo(
-        () =>
-            clsx("absolute left-0 w-screen flex flex-col transition-all ease-in-out duration-100", {
-                "-bottom-40": hideKeyboard,
-                "bottom-0": !hideKeyboard
-            }),
-        [hideKeyboard]
-    );
-
-    const hideButtonText = React.useMemo(() => (hideKeyboard ? "Show" : "Hide"), [hideKeyboard]);
-
     return (
         <div className="content">
             <h1 className="title">cheatle</h1>
@@ -185,7 +174,7 @@ function Home() {
                 <Row key={i} index={i} />
             ))}
             <WordList words={words} />
-            <div className={keyboardContainerClassName}>
+            <div className="keyboard-container">
                 <div className="w-full lg:w-2/5 mx-auto py-3 px-5 flex bg-nord4 dark:bg-nord2 rounded-md rounded-b-none">
                     <button
                         className="block mr-auto bg-nord11 hover:bg-nord15"
@@ -193,17 +182,11 @@ function Home() {
                     >
                         Clear
                     </button>
-                    <button
-                        className="block mx-auto bg-nord12 hover:bg-nord13"
-                        onClick={onHidePress}
-                    >
-                        {hideButtonText}
-                    </button>
                     <button className="block ml-auto" onClick={onFindPress}>
                         Find
                     </button>
                 </div>
-                <div className="w-full lg:w-2/5 h-40 mx-auto">
+                <div className="w-full lg:w-2/5 mx-auto">
                     <Keyboard
                         disableButtonHold
                         display={KeyboardDisplay}

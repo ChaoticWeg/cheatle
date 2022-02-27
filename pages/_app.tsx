@@ -11,7 +11,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                     name="viewport"
                     content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1"
                 />
-                <title>Hello</title>
+                <title>cheatle</title>
             </Head>
             <main>
                 <Component {...pageProps} />

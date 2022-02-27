@@ -1,4 +1,5 @@
 import React from "react";
+import _ from "underscore";
 
 type WordListProps = {
     words: string[];
@@ -9,11 +10,13 @@ export function WordList(props: WordListProps) {
 
     return (
         <ol className="word-list">
-            {words.map((w, i) => (
-                <li key={i} className="word-list-word">
-                    {w.toUpperCase()}
-                </li>
-            ))}
+            {_.isEmpty(words) && <div className="word-list-empty">no words match the input</div>}
+            {!_.isEmpty(words) &&
+                words.map((w, i) => (
+                    <li key={i} className="word-list-word">
+                        {w.toUpperCase()}
+                    </li>
+                ))}
         </ol>
     );
 }

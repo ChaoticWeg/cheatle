@@ -4,6 +4,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.cheatle-text {
+    @apply text-nord0 dark:text-nord6;
+}
+
 @layer base {
     html,
     body {
@@ -12,28 +16,28 @@
         @apply overflow-x-hidden;
     }
 
-    * {
-        @apply text-nord0 dark:text-nord6;
+    p {
+        @apply cheatle-text;
     }
 
     h1 {
-        @apply text-5xl;
+        @apply text-5xl cheatle-text;
     }
 
     h2 {
-        @apply text-4xl;
+        @apply text-4xl cheatle-text;
     }
 
     h3 {
-        @apply text-3xl;
+        @apply text-3xl cheatle-text;
     }
 
     h4 {
-        @apply text-2xl;
+        @apply text-2xl cheatle-text;
     }
 
     h5 {
-        @apply text-xl;
+        @apply text-xl cheatle-text;
     }
 
     h6 {
@@ -74,10 +78,7 @@
         @apply flex justify-center items-center h-16 md:h-20;
         @apply text-center text-3xl uppercase select-none;
         @apply transition-colors ease-in-out duration-75;
-    }
-
-    .tile > span {
-        @apply p-0 lg:pb-1;
+        @apply cursor-pointer;
     }
 
     .tile-active {
@@ -87,11 +88,11 @@
     }
 
     .tile-lock {
-        @apply bg-nord7 dark:text-nord6;
+        @apply bg-nord7 dark:text-nord0;
     }
 
     .tile-softlock {
-        @apply bg-nord13;
+        @apply bg-nord13 dark:text-nord0;
     }
 
     .tile-icon-buttons {
@@ -102,6 +103,7 @@
         @apply drop-shadow-sm shadow-nord4 dark:shadow-nord1;
         @apply transition-colors ease-in-out duration-100;
         @apply flex items-center;
+        @apply cursor-pointer;
     }
 
     .lock-icon {
@@ -110,13 +112,18 @@
     }
 
     .word-list {
-        @apply w-full lg:w-1/2 mx-auto mb-64 px-2 lg:px-0;
+        @apply w-full lg:w-1/2 mx-auto mb-60 px-2 lg:px-0;
         @apply grid grid-cols-4 lg:grid-cols-5 gap-2;
         @apply text-center;
     }
 
     .word-list-word {
         @apply py-2 rounded-md;
-        @apply bg-nord1;
+        @apply bg-nord1 cheatle-text;
+    }
+
+    .word-list-empty {
+        @apply col-span-4 lg:col-span-5;
+        @apply text-nord3 dark:text-nord4;
     }
 }
