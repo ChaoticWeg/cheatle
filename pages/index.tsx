@@ -1,3 +1,4 @@
+import { SearchIcon, TrashIcon } from "@heroicons/react/solid";
 import React from "react";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
@@ -169,15 +170,15 @@ function Home() {
             ))}
             <WordList loading={loading} words={words} />
             <div className="keyboard-container">
-                <div className="w-full lg:w-2/5 mx-auto py-3 px-5 flex bg-nord4 dark:bg-nord2 rounded-md rounded-b-none">
+                <div className="w-full lg:w-2/5 mx-auto pt-3 pb-2 px-5 flex bg-nord4 dark:bg-nord2 rounded-md rounded-b-none">
                     <button
                         className="block mr-auto bg-nord11 hover:bg-nord15"
                         onClick={onClearPress}
                     >
-                        Clear
+                        <TrashIcon className="h-7" />
                     </button>
                     <button className="block ml-auto" onClick={onFindPress}>
-                        Find
+                        <SearchIcon className="h-7" />
                     </button>
                 </div>
                 <div className="w-full lg:w-2/5 mx-auto">
