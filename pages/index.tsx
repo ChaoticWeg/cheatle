@@ -1,9 +1,10 @@
 import React from "react";
+import _ from "underscore";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import { Row } from "../components/Row";
 import { useBoardState } from "../hooks/useBoardState";
-import { BSA_BKSP, BSA_LETTER, BSA_RESET } from "../typings/RowState";
+import { BSA_BKSP, BSA_LETTER, BSA_RESET, TileState } from "../typings/RowState";
 
 const KeyboardLayout = {
     default: ["Q W E R T Y U I O P", "A S D F G H J K L", "Z X C V B N M {bksp}"]
@@ -13,15 +14,73 @@ const KeyboardDisplay = {
     "{bksp}": "⌫"
 };
 
+function fetchWords(word: string, mask: string): Promise<string[]> {
+    return new Promise((resolve, reject) => {
+        const qs = `word=${encodeURIComponent(word)}&mask=${encodeURIComponent(mask)}`;
+        fetch(`/api/find?${qs}`)
+            .then((res) => res.json())
+            .then(({ ok, message, words }) => {
+                if (!ok) return reject(new Error(message));
+                if (_.isEmpty(words)) return reject(new Error("no words match the clue"));
+                return resolve(words);
+            })
+            .catch(reject);
+    });
+}
+
 function Home() {
     const keyboard = React.useRef();
     const setKeyboardRef = React.useCallback((ref) => (keyboard.current = ref), []);
 
-    const { dispatch } = useBoardState();
+    const [loading, setLoading] = React.useState<boolean>(false);
+    const [words, setWords] = React.useState<string[]>([]);
+
+    React.useEffect(() => {
+        if (!_.isEmpty(words)) {
+            console.log(words);
+        }
+    }, [words]);
+
+    const { state, dispatch } = useBoardState();
 
     const onFindPress = React.useCallback(() => {
-        alert("WIP");
-    }, []);
+        const wordLength = _.reduce(
+            state?.tiles ?? [],
+            (l: number, r: TileState) => l + (r.letter === "" ? 0 : 1),
+            0
+        );
+
+        if (wordLength !== 5) {
+            alert("5 letters per guess please! got " + wordLength);
+            return;
+        }
+
+        const word = _.reduce(
+            state?.tiles ?? [],
+            (l: string, r: TileState) => l + r.letter,
+            ""
+        ).toLowerCase();
+
+        const mask = _.reduce(
+            state?.tiles ?? [],
+            (l: string, r: TileState) =>
+                l + (() => "!_?".charAt(["yes", "no", "maybe"].indexOf(r.lock)))(),
+            ""
+        );
+
+        if (mask === "!!!!!") {
+            alert("you got it right. what do you need me for??");
+            return;
+        }
+
+        setLoading(true);
+        setWords([]);
+
+        fetchWords(word, mask)
+            .then(setWords)
+            .catch((err) => alert(err.message))
+            .finally(() => setLoading(false));
+    }, [state?.tiles]);
 
     const onClearPress = React.useCallback(() => {
         dispatch?.({
@@ -67,6 +126,15 @@ function Home() {
             }
 
             e.preventDefault();
+
+            if (e.key === "Backspace") {
+                dispatch?.({
+                    type: BSA_BKSP,
+                    payload: {}
+                });
+                return;
+            }
+
             const letter = e.key.toUpperCase();
             if (letter.match(/^[A-Z]$/)) {
                 dispatch?.({
