@@ -51,6 +51,12 @@ function Home() {
      */
     const onKeyDown = React.useCallback(
         (e: KeyboardEvent) => {
+            if (e.isComposing || e.keyCode === 229) {
+                // Known Firefox issue: don't capture during IME composition
+                // https://developer.mozilla.org/en-US/docs/Web/API/Document/keydown_event#ignoring_keydown_during_ime_composition
+                return;
+            }
+
             if (e.ctrlKey || e.altKey || e.metaKey || e.repeat) {
                 // Don't capture event if ctrl/alt/meta, or repeated (held) keystroke
                 return;
