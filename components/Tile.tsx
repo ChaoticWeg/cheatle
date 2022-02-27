@@ -13,6 +13,7 @@ type TileProps = {
 
 function TileBase(props: TileProps) {
     const { active, state, onClick, onLockClick } = props;
+    const ref = React.useRef<HTMLDivElement>(null);
 
     const className = React.useMemo(
         () =>
@@ -36,8 +37,18 @@ function TileBase(props: TileProps) {
         }
     }, [state.lock]);
 
+    React.useEffect(() => {
+        if (active) {
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    ref.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                }, 1);
+            });
+        }
+    }, [active]);
+
     return (
-        <div className="tile-container">
+        <div className="tile-container" ref={ref}>
             <div className={className} onClick={onClick}>
                 <span>{state.letter}</span>
             </div>

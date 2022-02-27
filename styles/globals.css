@@ -60,8 +60,8 @@
     }
 
     .row {
-        @apply grid grid-cols-5 gap-2;
-        @apply max-w-sm md:max-w-md mx-auto;
+        @apply grid grid-cols-5 gap-1;
+        @apply max-w-sm md:max-w-md mx-auto pt-1;
     }
 
     .tile-container {

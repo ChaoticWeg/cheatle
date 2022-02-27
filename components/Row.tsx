@@ -14,6 +14,8 @@ type RowProps = {
 
 export function Row(props: RowProps) {
     const { index: rowIndex } = props;
+
+    const ref = React.useRef<HTMLDivElement>(null);
     const { state, dispatch } = useBoardState();
 
     const onTileClick = React.useCallback(
@@ -23,6 +25,11 @@ export function Row(props: RowProps) {
                 payload: { index, row: rowIndex }
             };
             dispatch?.(action);
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    ref.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                }, 1);
+            });
         },
         [rowIndex, dispatch]
     );
@@ -35,12 +42,17 @@ export function Row(props: RowProps) {
             };
 
             dispatch?.(action);
+            requestAnimationFrame(() => {
+                setTimeout(() => {
+                    ref.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                }, 1);
+            });
         },
         [rowIndex, dispatch]
     );
 
     return (
-        <div className="row">
+        <div className="row" ref={ref}>
             {state?.rows[rowIndex]?.tiles?.map((tile, i) => (
                 <Tile
                     key={i}
