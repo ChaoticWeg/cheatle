@@ -12,9 +12,10 @@ type FindResponse = FindSuccess | FindFailure;
  * @param masksArr masks
  * @returns filtered candidates
  */
-function firstPass(wordsArr: string[], masksArr: string[]): string[] {
-    // Sort candidates so we don't spoil word order!
-    const candidates = _.sortBy(wordsData.words);
+function firstPass(wordsArr: string[], masksArr: string[], candidates?: string[]): string[] {
+    if (!candidates) {
+        candidates = _.sortBy(wordsData.words);
+    }
 
     const regexes: RegExp[] = [];
 
@@ -59,8 +60,8 @@ function secondPass(wordsArr: string[], masksArr: string[], candidates: string[]
     let somewhere: string[] = [];
 
     for (let wi = 0; wi < wordsArr.length && wi < masksArr.length; wi++) {
-        const word = wordsArr[wi];
-        const mask = masksArr[wi];
+        const word = wordsArr[wi].toLowerCase();
+        const mask = masksArr[wi].toLowerCase();
 
         for (let mi = 0; mi < word.length && mi < mask.length; mi++) {
             const letter = word[mi];
@@ -80,10 +81,9 @@ function secondPass(wordsArr: string[], masksArr: string[], candidates: string[]
     nowhere = _.reject(nowhere, (n) => somewhere.includes(n));
 
     return _.filter(candidates, (candidate) => {
-        return (
-            !_.any(candidate.split(""), (l) => nowhere.includes(l)) &&
-            _.all(somewhere, (l) => candidate.includes(l))
-        );
+        const hasNowheres = _.any(nowhere, (l) => candidate.includes(l));
+        const hasSomewheres = _.all(somewhere, (l) => candidate.includes(l));
+        return hasSomewheres && !hasNowheres;
     });
 }
 
