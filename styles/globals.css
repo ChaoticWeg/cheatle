@@ -43,6 +43,11 @@
 }
 
 @layer components {
+    button {
+        @apply px-3 py-1 rounded-md;
+        @apply bg-nord10 text-nord6;
+    }
+
     .content {
         @apply container mx-auto py-2;
     }

@@ -3,7 +3,7 @@ import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import { Row } from "../components/Row";
 import { useBoardState } from "../hooks/useBoardState";
-import { BSA_BKSP, BSA_LETTER } from "../typings/RowState";
+import { BSA_BKSP, BSA_LETTER, BSA_RESET } from "../typings/RowState";
 
 const KeyboardLayout = {
     default: ["Q W E R T Y U I O P", "A S D F G H J K L", "Z X C V B N M {bksp}"]
@@ -19,7 +19,17 @@ function Home() {
 
     const { dispatch } = useBoardState();
 
-    const onKeyPress = React.useCallback(
+    const onClearPress = React.useCallback(() => {
+        dispatch?.({
+            type: BSA_RESET,
+            payload: {}
+        });
+    }, [dispatch]);
+
+    /**
+     * Software keyboard press
+     */
+    const onSoftKeyPress = React.useCallback(
         (button) => {
             if (button.toUpperCase() === "{BKSP}") {
                 dispatch?.({
@@ -36,18 +46,52 @@ function Home() {
         [dispatch]
     );
 
+    /**
+     * Hardware keyboard press
+     */
+    const onKeyDown = React.useCallback(
+        (e: KeyboardEvent) => {
+            if (e.ctrlKey || e.altKey || e.metaKey || e.repeat) {
+                // Don't capture event if ctrl/alt/meta, or repeated (held) keystroke
+                return;
+            }
+
+            e.preventDefault();
+            const letter = e.key.toUpperCase();
+            if (letter.match(/^[A-Z]$/)) {
+                dispatch?.({
+                    type: BSA_LETTER,
+                    payload: { letter }
+                });
+            }
+        },
+        [dispatch]
+    );
+
+    React.useEffect(() => {
+        window.addEventListener("keydown", onKeyDown);
+        return function () {
+            window.removeEventListener("keydown", onKeyDown);
+        };
+    }, [onKeyDown]);
+
     return (
         <div className="content">
             <h1 className="title">Hello</h1>
             <Row />
-            <div className="absolute bottom-0 left-0 w-screen">
+            <div className="absolute bottom-0 left-0 w-screen flex flex-col">
+                <div className="w-full lg:w-2/5 mx-auto p-2 mb-2">
+                    <button className="block ml-auto" onClick={onClearPress}>
+                        Clear
+                    </button>
+                </div>
                 <div className="w-full lg:w-2/5 mx-auto">
                     <Keyboard
                         disableButtonHold
                         display={KeyboardDisplay}
                         keyboardRef={setKeyboardRef}
                         layout={KeyboardLayout}
-                        onKeyPress={onKeyPress}
+                        onKeyPress={onSoftKeyPress}
                         physicalKeyboardHighlight
                     />
                 </div>
