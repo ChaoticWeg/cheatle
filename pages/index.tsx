@@ -1,5 +1,6 @@
 import { SearchIcon, TrashIcon } from "@heroicons/react/solid";
 import React from "react";
+import toast from "react-hot-toast";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import _ from "underscore";
@@ -7,6 +8,7 @@ import { Row } from "../components/Row";
 import { WordList } from "../components/WordList";
 import { useBoardState } from "../hooks/useBoardState";
 import { BSA_BKSP, BSA_LETTER, BSA_RESET, RowState, TileState } from "../typings/RowState";
+import { FindSuccess } from "./api/find";
 
 const KeyboardLayout = {
     default: ["Q W E R T Y U I O P", "A S D F G H J K L", "Z X C V B N M {bksp}"]
@@ -84,7 +86,18 @@ function Home() {
         setLoading(true);
         setWords([]);
 
-        fetchWords(words, masks)
+        const fetchPromise = fetchWords(words, masks);
+
+        toast.promise(fetchPromise, {
+            loading: "loading",
+            success: (data: string[]) =>
+                `${data.length === 0 ? "no" : data.length} possible word${
+                    data.length === 1 ? "" : "s"
+                }`,
+            error: (err) => `oops... ${err.message}`
+        });
+
+        fetchPromise
             .then(setWords)
             .catch((err) => alert(err.message))
             .finally(() => setLoading(false));

@@ -2,9 +2,9 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import _ from "underscore";
 import { default as wordsData } from "../../data/words.json";
 
-type FindSuccess = { ok: boolean; words: string[] };
-type FindFailure = { ok: boolean; message: string };
-type FindResponse = FindSuccess | FindFailure;
+export type FindSuccess = { ok: boolean; words: string[] };
+export type FindFailure = { ok: boolean; message: string };
+export type FindResponse = FindSuccess | FindFailure;
 
 /**
  * First pass: get all words that don't match the incorrect letters and DO match the correct letters
