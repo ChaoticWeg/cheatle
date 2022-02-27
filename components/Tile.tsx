@@ -6,13 +6,15 @@ import { TileState } from "../typings/RowState";
 
 type TileProps = {
     active: boolean;
+    focusBoundary: "end" | "center";
+    focusOnActive: boolean;
     state: TileState;
     onClick: () => void;
     onLockClick: () => void;
 };
 
 function TileBase(props: TileProps) {
-    const { active, state, onClick, onLockClick } = props;
+    const { active, focusBoundary, focusOnActive, state, onClick, onLockClick } = props;
     const ref = React.useRef<HTMLDivElement>(null);
 
     const className = React.useMemo(
@@ -38,14 +40,14 @@ function TileBase(props: TileProps) {
     }, [state.lock]);
 
     React.useEffect(() => {
-        if (active) {
+        if (active && focusOnActive) {
             requestAnimationFrame(() => {
                 setTimeout(() => {
-                    ref.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                    ref.current?.scrollIntoView({ block: focusBoundary, behavior: "smooth" });
                 }, 1);
             });
         }
-    }, [active]);
+    }, [active, focusBoundary, focusOnActive]);
 
     return (
         <div className="tile-container" ref={ref}>

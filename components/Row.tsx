@@ -57,6 +57,8 @@ export function Row(props: RowProps) {
                 <Tile
                     key={i}
                     active={state?.activeRow === rowIndex && state?.rows[rowIndex].index === i}
+                    focusBoundary={rowIndex === 0 ? "end" : "center"}
+                    focusOnActive={rowIndex + i > 0}
                     state={tile}
                     onClick={() => onTileClick(i)}
                     onLockClick={() => onLockClick(i)}
