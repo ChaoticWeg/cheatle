@@ -45,7 +45,9 @@
 @layer components {
     button {
         @apply px-3 py-1 rounded-md;
-        @apply bg-nord10 text-nord6;
+        @apply bg-nord10 text-nord5;
+        @apply hover:bg-nord9 hover:text-nord6;
+        @apply transition-colors ease-in-out duration-75;
     }
 
     .content {
