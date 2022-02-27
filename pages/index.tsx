@@ -134,9 +134,8 @@ function Home() {
                 return;
             }
 
-            e.preventDefault();
-
             if (e.key === "Backspace") {
+                e.preventDefault();
                 dispatch?.({
                     type: BSA_BKSP,
                     payload: {}
@@ -146,6 +145,7 @@ function Home() {
 
             const letter = e.key.toUpperCase();
             if (letter.match(/^[A-Z]$/)) {
+                e.preventDefault();
                 dispatch?.({
                     type: BSA_LETTER,
                     payload: { letter }
