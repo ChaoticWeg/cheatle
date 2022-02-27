@@ -250,6 +250,9 @@ function Home() {
                         onKeyPress={onSoftKeyPress}
                         physicalKeyboardHighlight
                     />
+                    <div className="version">
+                        <span>v{process.env.NEXT_PUBLIC_VERSION ?? "0.0.0"}</span>
+                    </div>
                 </div>
             </div>
         </div>
