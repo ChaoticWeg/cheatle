@@ -6,8 +6,12 @@ export function BoardStateLetterReducer(
 ): BoardState {
     const { letter } = action.payload;
     let { activeRow, rows } = state;
-
     let row = rows[activeRow];
+
+    if (!row) {
+        return state;
+    }
+
     let { index } = row;
 
     if (index >= rows[activeRow].tiles.length) {
