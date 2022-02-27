@@ -6,85 +6,100 @@ type FindSuccess = { ok: boolean; words: string[] };
 type FindFailure = { ok: boolean; message: string };
 type FindResponse = FindSuccess | FindFailure;
 
-export default function handler(req: NextApiRequest, res: NextApiResponse<FindResponse>) {
-    const { word, mask } = req.query;
+/**
+ * First pass: get all words that don't match the incorrect letters and DO match the correct letters
+ * @param wordsArr guesses
+ * @param masksArr masks
+ * @returns filtered candidates
+ */
+function firstPass(wordsArr: string[], masksArr: string[]): string[] {
+    const candidates = wordsData.words;
+    const regexes: RegExp[] = [];
 
-    if (!word || !mask) {
-        return res
-            .status(400)
-            .send({ ok: false, message: "word and mask are required GET params" });
+    for (let wi = 0; wi < wordsArr.length && wi < masksArr.length; wi++) {
+        const thisWord = wordsArr[wi];
+        const thisMask = masksArr[wi];
+
+        if (_.isEmpty(thisWord) || _.isEmpty(thisMask)) {
+            continue;
+        }
+
+        let thisRegexStr = "";
+
+        for (let mi = 0; mi < thisWord.length && mi < thisMask.length; mi++) {
+            const letter = thisWord[mi].toLowerCase();
+            const maskChar = thisMask[mi];
+
+            if (maskChar === "!") {
+                thisRegexStr += `${letter}`;
+            } else {
+                thisRegexStr += `[^${letter}]`;
+            }
+        }
+
+        regexes.push(new RegExp(`^${thisRegexStr}$`, "i"));
     }
 
-    if (Array.isArray(word) || Array.isArray(mask)) {
-        return res
-            .status(400)
-            .send({ ok: false, message: "why are you sending me arrays? send me strings" });
-    }
+    return _.filter(candidates, (candidate) => {
+        return _.all(regexes, (reg) => !!candidate.match(reg));
+    });
+}
 
-    if (word.length !== 5 || mask.length !== 5) {
-        return res
-            .status(400)
-            .send({ ok: false, message: "bad word or mask: must have length of 5" });
-    }
+/**
+ * Second pass: words that DO NOT contain ANY "nowhere" letters, but DO contain ALL "somewhere" letters
+ * @param wordsArr guesses
+ * @param masksArr masks
+ * @param candidates candidates
+ * @returns filtered candidates
+ */
+function secondPass(wordsArr: string[], masksArr: string[], candidates: string[]): string[] {
+    const nowhere: string[] = [];
+    const somewhere: string[] = [];
 
-    const { words } = wordsData;
-    const wordArr = word.split("");
-    const maskArr = mask.split("");
+    for (let wi = 0; wi < wordsArr.length && wi < masksArr.length; wi++) {
+        const word = wordsArr[wi];
+        const mask = masksArr[wi];
 
-    let matchRegexStr: string = "";
-    let notInWordArr: string[] = [];
-    let somewhereInWordArr: string[] = [];
+        for (let mi = 0; mi < word.length && mi < mask.length; mi++) {
+            const letter = word[mi];
+            const thisMask = mask[mi];
 
-    for (let i = 0; i < wordArr.length && i < maskArr.length; i++) {
-        let thisLetter = wordArr[i].toLowerCase();
-        let thisMask = maskArr[i];
-
-        switch (thisMask) {
-            case "_": {
-                if (
-                    !notInWordArr.includes(thisLetter.toLowerCase()) &&
-                    !somewhereInWordArr.includes(thisLetter.toLowerCase())
-                )
-                    notInWordArr.push(thisLetter.toLowerCase());
-                matchRegexStr += `[^${thisLetter}]`;
-                break;
+            if (thisMask === "_" && !nowhere.includes(letter)) {
+                nowhere.push(letter);
             }
-            case "?": {
-                if (!somewhereInWordArr.includes(thisLetter.toLowerCase()))
-                    somewhereInWordArr.push(thisLetter.toLowerCase());
-                matchRegexStr += `[^${thisLetter}]`;
-                break;
-            }
-            case "!": {
-                matchRegexStr += thisLetter;
-                break;
-            }
-            default: {
-                return res
-                    .status(400)
-                    .send({ ok: false, message: `invalid mask character: ${thisMask}` });
+
+            if (thisMask === "?" && !somewhere.includes(letter)) {
+                somewhere.push(letter);
             }
         }
     }
 
-    const matchRegex = new RegExp(`^${matchRegexStr}$`, "i");
-    const notInWordRegex = new RegExp(`^[^${notInWordArr.join("")}]{5}$`);
-
-    console.log(`
-        MATCH REGEX: ${matchRegex}
-        NOT IN WORD REGEX: ${notInWordRegex}
-        SOMEWHERE IN WORD ARR: ${somewhereInWordArr.join("")}
-    `);
-
-    const matches = _.filter(words, (word: string) => {
-        return !!(
-            word.match(matchRegex) &&
-            (_.isEmpty(notInWordArr) ? true : word.match(notInWordRegex)) &&
-            (_.isEmpty(somewhereInWordArr)
-                ? true
-                : _.all(somewhereInWordArr, (l) => word.includes(l)))
+    return _.filter(candidates, (candidate) => {
+        return (
+            !_.any(candidate.split(""), (l) => nowhere.includes(l)) &&
+            _.all(somewhere, (l) => candidate.includes(l))
         );
     });
+}
+
+export default function handler(req: NextApiRequest, res: NextApiResponse<FindResponse>) {
+    let { words, masks } = req.query;
+
+    if (!words || !masks) {
+        return res
+            .status(400)
+            .send({ ok: false, message: "words and masks are required GET params" });
+    }
+
+    if (Array.isArray(words) || Array.isArray(masks)) {
+        return res.status(400).send({ ok: false, message: "don't send me arrays" });
+    }
+
+    words = words.split(",");
+    masks = masks.split(",");
+
+    let matches = firstPass(words, masks);
+    matches = secondPass(words, masks, matches);
 
     return res.status(200).send({ ok: true, words: matches });
 }

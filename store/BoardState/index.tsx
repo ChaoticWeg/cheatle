@@ -1,6 +1,7 @@
 import {
     BoardState,
     BoardStateAction,
+    BoardStateBackspaceAction,
     BoardStateIndexAction,
     BoardStateLetterAction,
     BoardStateLockAction,
@@ -8,50 +9,57 @@ import {
     BSA_INDEX,
     BSA_LETTER,
     BSA_LOCK,
-    BSA_RESET
+    BSA_RESET,
+    RowState,
+    TileState
 } from "../../typings/RowState";
+import { BoardStateBackspaceReducer } from "./Backspace";
 import { BoardStateLetterReducer } from "./Letter";
 import { BoardStateLockReducer } from "./Lock";
-
-export const initialBoardState: BoardState = {
-    index: 0,
-    tiles: [
-        { letter: "", lock: "no" },
-        { letter: "", lock: "no" },
-        { letter: "", lock: "no" },
-        { letter: "", lock: "no" },
-        { letter: "", lock: "no" }
-    ]
-};
+import { BoardStateIndexReducer } from "./SetIndex";
 
 export function initializeBoardState(): BoardState {
-    return { ...initialBoardState };
+    const result: BoardState = {
+        activeRow: 0,
+        rows: (() => {
+            const rows: RowState[] = [];
+            for (let i = 0; i < 6; i++) {
+                rows[i] = {
+                    index: 0,
+                    tiles: (() => {
+                        const tiles: TileState[] = [];
+                        for (let j = 0; j < 5; j++) {
+                            tiles[j] = { letter: "", lock: "no" };
+                        }
+                        return tiles;
+                    })()
+                };
+            }
+            return rows;
+        })()
+    };
+
+    return result;
 }
 
-export function BoardStateReducer(state: BoardState = initialBoardState, action: BoardStateAction) {
+export const initialBoardState: BoardState = initializeBoardState();
+
+export function BoardStateReducer(
+    state: BoardState = initialBoardState,
+    action: BoardStateAction
+): BoardState {
     switch (action.type) {
-        case BSA_LOCK: {
+        case BSA_LOCK:
             return BoardStateLockReducer(state, action as BoardStateLockAction);
-        }
-        case BSA_INDEX: {
-            const { index } = (action as BoardStateIndexAction).payload;
-            return { ...state, index };
-        }
-        case BSA_LETTER: {
+        case BSA_INDEX:
+            return BoardStateIndexReducer(state, action as BoardStateIndexAction);
+        case BSA_LETTER:
             return BoardStateLetterReducer(state, action as BoardStateLetterAction);
-        }
-        case BSA_BKSP: {
-            let { index } = state;
-            if (index > 0) index -= 1;
-            const tiles = [
-                ...state.tiles.slice(0, index),
-                { ...state.tiles[index], letter: "", lock: "no" },
-                ...state.tiles.slice(index + 1)
-            ];
-            return { ...state, tiles, index };
-        }
-        case BSA_RESET: {
+        case BSA_BKSP:
+            return BoardStateBackspaceReducer(state, action as BoardStateBackspaceAction);
+        case BSA_RESET:
             return initializeBoardState();
-        }
+        default:
+            return state;
     }
 }

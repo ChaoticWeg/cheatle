@@ -58,12 +58,13 @@
     }
 
     .row {
-        @apply grid grid-cols-5 gap-4;
+        @apply relative;
+        @apply grid grid-cols-5 gap-2;
         @apply max-w-sm md:max-w-md mx-auto;
     }
 
     .tile-container {
-        @apply grid grid-rows-2 gap-3;
+        @apply grid grid-rows-2 gap-2;
     }
 
     .tile {
@@ -106,5 +107,16 @@
     .lock-icon {
         @apply text-nord0 dark:text-nord6;
         @apply flex h-1/2 mx-auto mb-1;
+    }
+
+    .word-list {
+        @apply w-full lg:w-1/2 mx-auto mb-64 px-2 lg:px-0;
+        @apply grid grid-cols-4 lg:grid-cols-5 gap-2;
+        @apply text-center;
+    }
+
+    .word-list-word {
+        @apply py-2 rounded-md;
+        @apply bg-nord1;
     }
 }

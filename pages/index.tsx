@@ -4,7 +4,9 @@ import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import { Row } from "../components/Row";
 import { useBoardState } from "../hooks/useBoardState";
-import { BSA_BKSP, BSA_LETTER, BSA_RESET, TileState } from "../typings/RowState";
+import { BSA_BKSP, BSA_LETTER, BSA_RESET, RowState, TileState } from "../typings/RowState";
+import { WordList } from "../components/WordList";
+import clsx from "clsx";
 
 const KeyboardLayout = {
     default: ["Q W E R T Y U I O P", "A S D F G H J K L", "Z X C V B N M {bksp}"]
@@ -14,9 +16,11 @@ const KeyboardDisplay = {
     "{bksp}": "⌫"
 };
 
-function fetchWords(word: string, mask: string): Promise<string[]> {
+function fetchWords(words: string[], masks: string[]): Promise<string[]> {
     return new Promise((resolve, reject) => {
-        const qs = `word=${encodeURIComponent(word)}&mask=${encodeURIComponent(mask)}`;
+        const wordsStr = encodeURIComponent(words.join(","));
+        const masksStr = encodeURIComponent(masks.join(","));
+        const qs = `words=${wordsStr}&masks=${masksStr}`;
         fetch(`/api/find?${qs}`)
             .then((res) => res.json())
             .then(({ ok, message, words }) => {
@@ -32,6 +36,7 @@ function Home() {
     const keyboard = React.useRef();
     const setKeyboardRef = React.useCallback((ref) => (keyboard.current = ref), []);
 
+    const [hideKeyboard, setHideKeyboard] = React.useState<boolean>(false);
     const [loading, setLoading] = React.useState<boolean>(false);
     const [words, setWords] = React.useState<string[]>([]);
 
@@ -44,45 +49,54 @@ function Home() {
     const { state, dispatch } = useBoardState();
 
     const onFindPress = React.useCallback(() => {
-        const wordLength = _.reduce(
-            state?.tiles ?? [],
-            (l: number, r: TileState) => l + (r.letter === "" ? 0 : 1),
-            0
+        const words: string[] = _.reduce(
+            state?.rows ?? [],
+            (l: string[], r: RowState) => [
+                ...l,
+                _.reduce(r.tiles ?? [], (l: string, r: TileState) => l + r.letter, "")
+            ],
+            []
         );
 
-        if (wordLength !== 5) {
-            alert("5 letters per guess please! got " + wordLength);
-            return;
-        }
-
-        const word = _.reduce(
-            state?.tiles ?? [],
-            (l: string, r: TileState) => l + r.letter,
-            ""
-        ).toLowerCase();
-
-        const mask = _.reduce(
-            state?.tiles ?? [],
-            (l: string, r: TileState) =>
-                l + (() => "!_?".charAt(["yes", "no", "maybe"].indexOf(r.lock)))(),
-            ""
+        const masks: string[] = _.reduce(
+            state?.rows ?? [],
+            (l: string[], r: RowState) => [
+                ...l,
+                _.reduce(
+                    r.tiles ?? [],
+                    (l: string, r: TileState) => {
+                        switch (r.lock) {
+                            case "no":
+                                return l + "_";
+                            case "maybe":
+                                return l + "?";
+                            case "yes":
+                                return l + "!";
+                            default:
+                                return l + ".";
+                        }
+                    },
+                    ""
+                )
+            ],
+            []
         );
-
-        if (mask === "!!!!!") {
-            alert("you got it right. what do you need me for??");
-            return;
-        }
 
         setLoading(true);
         setWords([]);
 
-        fetchWords(word, mask)
+        fetchWords(words, masks)
             .then(setWords)
             .catch((err) => alert(err.message))
             .finally(() => setLoading(false));
-    }, [state?.tiles]);
+    }, [state?.rows]);
+
+    const onHidePress = React.useCallback(() => {
+        setHideKeyboard((hkb) => !hkb);
+    }, []);
 
     const onClearPress = React.useCallback(() => {
+        setWords([]);
         dispatch?.({
             type: BSA_RESET,
             payload: {}
@@ -153,23 +167,43 @@ function Home() {
         };
     }, [onKeyDown]);
 
+    const keyboardContainerClassName = React.useMemo(
+        () =>
+            clsx("absolute left-0 w-screen flex flex-col transition-all ease-in-out duration-100", {
+                "-bottom-40": hideKeyboard,
+                "bottom-0": !hideKeyboard
+            }),
+        [hideKeyboard]
+    );
+
+    const hideButtonText = React.useMemo(() => (hideKeyboard ? "Show" : "Hide"), [hideKeyboard]);
+
     return (
         <div className="content">
-            <h1 className="title">Hello</h1>
-            <Row />
-            <div className="absolute bottom-0 left-0 w-screen flex flex-col">
-                <div className="w-full lg:w-2/5 mx-auto p-2 mb-2 flex">
+            <h1 className="title">cheatle</h1>
+            {state?.rows?.map((row, i) => (
+                <Row key={i} index={i} />
+            ))}
+            <WordList words={words} />
+            <div className={keyboardContainerClassName}>
+                <div className="w-full lg:w-2/5 mx-auto py-3 px-5 flex bg-nord4 dark:bg-nord2 rounded-md rounded-b-none">
                     <button
                         className="block mr-auto bg-nord11 hover:bg-nord15"
                         onClick={onClearPress}
                     >
                         Clear
                     </button>
+                    <button
+                        className="block mx-auto bg-nord12 hover:bg-nord13"
+                        onClick={onHidePress}
+                    >
+                        {hideButtonText}
+                    </button>
                     <button className="block ml-auto" onClick={onFindPress}>
                         Find
                     </button>
                 </div>
-                <div className="w-full lg:w-2/5 mx-auto">
+                <div className="w-full lg:w-2/5 h-40 mx-auto">
                     <Keyboard
                         disableButtonHold
                         display={KeyboardDisplay}

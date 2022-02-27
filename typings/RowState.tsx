@@ -5,9 +5,14 @@ export type TileState = {
     lock: TileLockState;
 };
 
-export type BoardState = {
+export type RowState = {
     index: number;
     tiles: TileState[];
+};
+
+export type BoardState = {
+    activeRow: number;
+    rows: RowState[];
 };
 
 type BoardStateActionType = "lock" | "letter" | "index" | "bksp" | "reset";
@@ -22,7 +27,7 @@ export type BoardStateAction<T extends {} = {}> = {
     payload: T;
 };
 
-type BoardStateLockPayload = { index: number };
+type BoardStateLockPayload = { index: number; row: number };
 export interface BoardStateLockAction extends BoardStateAction<BoardStateLockPayload> {
     type: "lock";
 }
@@ -32,7 +37,7 @@ export interface BoardStateLetterAction extends BoardStateAction<BoardStateLette
     type: "letter";
 }
 
-type BoardStateIndexPayload = { index: number };
+type BoardStateIndexPayload = { index: number; row: number };
 export interface BoardStateIndexAction extends BoardStateAction<BoardStateIndexPayload> {
     type: "index";
 }

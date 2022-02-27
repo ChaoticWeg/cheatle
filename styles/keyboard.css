@@ -4,12 +4,12 @@
 
 @layer components {
     div.react-simple-keyboard {
-        @apply bg-nord4 dark:bg-nord1;
-        @apply pb-8;
+        @apply bg-nord4 dark:bg-nord2;
+        @apply pb-8 rounded-none;
     }
 
     div.react-simple-keyboard div.hg-button {
-        @apply bg-nord6 dark:bg-nord2;
+        @apply bg-nord6 dark:bg-nord0;
         @apply text-nord0 dark:text-nord6;
         @apply drop-shadow-sm;
         @apply border-none;
