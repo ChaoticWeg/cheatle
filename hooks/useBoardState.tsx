@@ -1,9 +1,5 @@
 import React from "react";
-import {
-    BoardStateReducer,
-    initialBoardState,
-    initializeBoardState
-} from "../store/BoardStateStore";
+import { BoardStateReducer, initialBoardState, initializeBoardState } from "../store";
 import type { BoardState, BoardStateAction } from "../typings/RowState";
 
 type IBoardStateContext = {
@@ -12,7 +8,7 @@ type IBoardStateContext = {
 };
 
 const BoardStateContext = React.createContext<IBoardStateContext>({
-    state: [],
+    state: initialBoardState,
     dispatch: () => []
 });
 

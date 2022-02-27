@@ -1,3 +1,5 @@
+@import "./keyboard.css";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -92,5 +94,11 @@
         @apply border border-nord4 dark:border-nord2;
         @apply drop-shadow-sm shadow-nord4 dark:shadow-nord1;
         @apply transition-colors ease-in-out duration-100;
+        @apply flex items-center;
+    }
+
+    .lock-icon {
+        @apply text-nord0 dark:text-nord6;
+        @apply flex h-1/2 mx-auto mb-1;
     }
 }

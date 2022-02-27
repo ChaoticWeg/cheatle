@@ -1,21 +1,20 @@
 import React from "react";
-import _ from "underscore";
 import { useBoardState } from "../hooks/useBoardState";
-import { BSA_LOCK } from "../typings/RowState";
+import { BSA_INDEX, BSA_LOCK } from "../typings/RowState";
 import { Tile } from "./Tile";
 
-type RowProps = {
-    currentIndex: number;
-    setCurrentIndex: (i: number) => void;
-};
-
-const dummyArray = Array.from(new Array(5)).map((_, i) => i);
-
-export function Row(props: RowProps) {
-    const { currentIndex, setCurrentIndex } = props;
+export function Row() {
     const { state, dispatch } = useBoardState();
 
-    const onTileClick = React.useCallback((index) => setCurrentIndex(index), [setCurrentIndex]);
+    const onTileClick = React.useCallback(
+        (index) => {
+            dispatch?.({
+                type: BSA_INDEX,
+                payload: { index }
+            });
+        },
+        [dispatch]
+    );
 
     const onLockClick = React.useCallback(
         (index) => {
@@ -29,10 +28,10 @@ export function Row(props: RowProps) {
 
     return (
         <div className="row">
-            {state?.map((tile, i) => (
+            {state?.tiles?.map((tile, i) => (
                 <Tile
                     key={i}
-                    active={currentIndex === i}
+                    active={state?.index === i}
                     state={tile}
                     onClick={() => onTileClick(i)}
                     onLockClick={() => onLockClick(i)}
