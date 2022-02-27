@@ -13,7 +13,9 @@ type FindResponse = FindSuccess | FindFailure;
  * @returns filtered candidates
  */
 function firstPass(wordsArr: string[], masksArr: string[]): string[] {
-    const candidates = wordsData.words;
+    // Sort candidates so we don't spoil word order!
+    const candidates = _.sortBy(wordsData.words);
+
     const regexes: RegExp[] = [];
 
     for (let wi = 0; wi < wordsArr.length && wi < masksArr.length; wi++) {
@@ -53,8 +55,8 @@ function firstPass(wordsArr: string[], masksArr: string[]): string[] {
  * @returns filtered candidates
  */
 function secondPass(wordsArr: string[], masksArr: string[], candidates: string[]): string[] {
-    const nowhere: string[] = [];
-    const somewhere: string[] = [];
+    let nowhere: string[] = [];
+    let somewhere: string[] = [];
 
     for (let wi = 0; wi < wordsArr.length && wi < masksArr.length; wi++) {
         const word = wordsArr[wi];
@@ -73,6 +75,9 @@ function secondPass(wordsArr: string[], masksArr: string[], candidates: string[]
             }
         }
     }
+
+    // Remove letters from "nowhere" if they exist in "somewhere"
+    nowhere = _.reject(nowhere, (n) => somewhere.includes(n));
 
     return _.filter(candidates, (candidate) => {
         return (
