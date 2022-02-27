@@ -45,7 +45,7 @@ export function BoardStateReducer(state: BoardState = initialBoardState, action:
             if (index > 0) index -= 1;
             const tiles = [
                 ...state.tiles.slice(0, index),
-                { ...state.tiles[index], letter: "" },
+                { ...state.tiles[index], letter: "", lock: "no" },
                 ...state.tiles.slice(index + 1)
             ];
             return { ...state, tiles, index };
