@@ -5,7 +5,7 @@
 @layer components {
     div.react-simple-keyboard {
         @apply bg-nord4 dark:bg-nord2;
-        @apply pb-4 rounded-none;
+        @apply pb-4 lg:px-5 rounded-none;
     }
 
     div.react-simple-keyboard div.hg-button {
@@ -17,6 +17,5 @@
 
     div.keyboard-container {
         @apply absolute left-0 bottom-0 w-screen flex flex-col;
-        @apply p-0 lg:px-2;
     }
 }

@@ -68,14 +68,14 @@
     }
 
     .tile-container {
-        @apply grid grid-rows-2 gap-2;
+        @apply flex flex-col mb-4;
     }
 
     .tile {
         @apply border-2 border-nord3 dark:border-nord2 rounded-lg;
         @apply bg-nord5 dark:bg-nord1;
         @apply text-nord0 dark:text-nord6;
-        @apply flex justify-center items-center h-16 md:h-20;
+        @apply flex justify-center items-center h-16 md:h-20 mb-2;
         @apply text-center text-3xl uppercase select-none;
         @apply transition-colors ease-in-out duration-75;
         @apply cursor-pointer;
@@ -112,7 +112,7 @@
     }
 
     .word-list {
-        @apply w-full lg:w-1/2 mx-auto mb-60 px-2 lg:px-0;
+        @apply w-full lg:w-1/2 mx-auto mb-60 px-2 lg:px-0 mt-2;
         @apply grid grid-cols-4 lg:grid-cols-5 gap-2;
         @apply text-center;
     }
