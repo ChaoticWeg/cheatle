@@ -14,9 +14,7 @@ function MyApp({ Component, pageProps }: AppProps) {
                 />
                 <title>cheatle</title>
             </Head>
-            <main>
-                <Component {...pageProps} />
-            </main>
+            <Component {...pageProps} />
             <Toaster />
         </BoardStateProvider>
     );

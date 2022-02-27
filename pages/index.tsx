@@ -1,4 +1,10 @@
-import { SearchIcon, TrashIcon } from "@heroicons/react/solid";
+import {
+    ChevronDoubleDownIcon,
+    ChevronDoubleUpIcon,
+    SearchIcon,
+    TrashIcon
+} from "@heroicons/react/solid";
+import clsx from "clsx";
 import React from "react";
 import toast from "react-hot-toast";
 import Keyboard from "react-simple-keyboard";
@@ -39,14 +45,9 @@ function Home() {
 
     const list = React.useRef<HTMLOListElement>(null);
 
+    const [showGoTop, setShowGoTop] = React.useState<boolean>(false);
     const [loading, setLoading] = React.useState<boolean>(false);
     const [words, setWords] = React.useState<string[]>([]);
-
-    React.useEffect(() => {
-        if (!_.isEmpty(words)) {
-            console.log(words);
-        }
-    }, [words]);
 
     const { state, dispatch } = useBoardState();
 
@@ -100,8 +101,14 @@ function Home() {
 
         fetchPromise
             .then(setWords)
-            .then(() => list.current?.scrollIntoView({ behavior: "smooth" }))
-            .catch((err) => alert(err.message))
+            .then(() => {
+                requestAnimationFrame(() => {
+                    setTimeout(() => {
+                        list.current?.scrollIntoView({ block: "start", behavior: "smooth" });
+                    }, 1);
+                });
+            })
+            .catch(console.error)
             .finally(() => setLoading(false));
     }, [state?.rows]);
 
@@ -110,6 +117,9 @@ function Home() {
         dispatch?.({
             type: BSA_RESET,
             payload: {}
+        });
+        requestAnimationFrame(() => {
+            setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 1);
         });
     }, [dispatch]);
 
@@ -170,12 +180,40 @@ function Home() {
         [dispatch]
     );
 
+    const onGoTopPress = React.useCallback(() => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }, []);
+
+    const onGoWordsPress = React.useCallback(() => {
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                list.current?.scrollIntoView({ block: "start", behavior: "smooth" });
+            }, 1);
+        });
+    }, []);
+
     React.useEffect(() => {
         window.addEventListener("keydown", onKeyDown);
         return function () {
             window.removeEventListener("keydown", onKeyDown);
         };
     }, [onKeyDown]);
+
+    React.useEffect(() => {
+        function _onScroll() {
+            const pos = window.scrollY;
+            setShowGoTop(pos > 50);
+        }
+
+        const onScroll = _.throttle(_onScroll, 100);
+
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
+    const navIconClassName = React.useMemo(() => {
+        return clsx("h-7 transition-all ease-in-out duration-100", { "rotate-180": showGoTop });
+    }, [showGoTop]);
 
     return (
         <div className="content">
@@ -186,15 +224,22 @@ function Home() {
             <WordList ref={list} loading={loading} words={words} />
             <div className="keyboard-container">
                 <div className="w-full lg:w-2/5 mx-auto pt-3 pb-2 px-5 flex bg-nord4 dark:bg-nord2 rounded-md rounded-b-none">
-                    <button
-                        className="block mr-auto bg-nord11 hover:bg-nord15"
-                        onClick={onClearPress}
-                    >
-                        <TrashIcon className="h-7" />
-                    </button>
-                    <button className="block ml-auto" onClick={onFindPress}>
-                        <SearchIcon className="h-7" />
-                    </button>
+                    <div className="mr-auto">
+                        <button className="bg-nord11 hover:bg-nord15" onClick={onClearPress}>
+                            <TrashIcon className="h-7" />
+                        </button>
+                    </div>
+                    <div className="ml-auto">
+                        <button
+                            className="mr-2"
+                            onClick={showGoTop ? onGoTopPress : onGoWordsPress}
+                        >
+                            <ChevronDoubleDownIcon className={navIconClassName} />
+                        </button>
+                        <button onClick={onFindPress}>
+                            <SearchIcon className="h-7" />
+                        </button>
+                    </div>
                 </div>
                 <div className="w-full lg:w-2/5 mx-auto">
                     <Keyboard

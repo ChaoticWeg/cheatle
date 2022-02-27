@@ -5,17 +5,16 @@
 @layer components {
     div.react-simple-keyboard {
         @apply bg-nord4 dark:bg-nord2;
-        @apply pb-4 lg:px-5 rounded-none;
+        @apply pb-8 lg:px-5 rounded-none;
     }
 
     div.react-simple-keyboard div.hg-button {
         @apply bg-nord6 dark:bg-nord0;
         @apply text-nord0 dark:text-nord6;
-        @apply drop-shadow-sm;
-        @apply border-none;
+        @apply drop-shadow-sm border-none;
     }
 
     div.keyboard-container {
-        @apply absolute left-0 bottom-0 w-screen flex flex-col;
+        @apply sticky left-0 bottom-0 right-0 flex flex-col;
     }
 }
