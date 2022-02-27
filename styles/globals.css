@@ -116,7 +116,7 @@
     }
 
     .word-list {
-        @apply w-full lg:w-1/2 mx-auto mb-60 px-2 lg:px-0 mt-2;
+        @apply w-full lg:w-1/2 mx-auto mb-60 px-5 mt-2;
         @apply grid grid-cols-4 lg:grid-cols-5 gap-2;
         @apply text-center;
     }
