@@ -58,6 +58,7 @@ function firstPass(wordsArr: string[], masksArr: string[], candidates?: string[]
 function secondPass(wordsArr: string[], masksArr: string[], candidates: string[]): string[] {
     let nowhere: string[] = [];
     let somewhere: string[] = [];
+    let correct: string[] = [];
 
     for (let wi = 0; wi < wordsArr.length && wi < masksArr.length; wi++) {
         const word = wordsArr[wi].toLowerCase();
@@ -74,11 +75,15 @@ function secondPass(wordsArr: string[], masksArr: string[], candidates: string[]
             if (thisMask === "?" && !somewhere.includes(letter)) {
                 somewhere.push(letter);
             }
+
+            if (thisMask === "!" && !correct.includes(letter)) {
+                correct.push(letter);
+            }
         }
     }
 
-    // Remove letters from "nowhere" if they exist in "somewhere"
-    nowhere = _.reject(nowhere, (n) => somewhere.includes(n));
+    // Remove letters from "nowhere" if they exist in "somewhere" or "correct"
+    nowhere = _.reject(nowhere, (n) => somewhere.includes(n) || correct.includes(n));
 
     return _.filter(candidates, (candidate) => {
         const hasNowheres = _.any(nowhere, (l) => candidate.includes(l));
