@@ -33,6 +33,9 @@ function WordListBase(props: WordListInternalProps) {
     );
 }
 
-export const WordList = React.forwardRef<HTMLOListElement, WordListProps>((props, ref) => (
+const WordList = React.forwardRef<HTMLOListElement, WordListProps>((props, ref) => (
     <WordListBase {...props} incomingRef={ref} />
 ));
+
+WordList.displayName = "WordList";
+export { WordList };

@@ -24,7 +24,7 @@ export function Row(props: RowProps) {
             };
             dispatch?.(action);
         },
-        [dispatch]
+        [rowIndex, dispatch]
     );
 
     const onLockClick = React.useCallback(
@@ -36,7 +36,7 @@ export function Row(props: RowProps) {
 
             dispatch?.(action);
         },
-        [dispatch]
+        [rowIndex, dispatch]
     );
 
     return (
