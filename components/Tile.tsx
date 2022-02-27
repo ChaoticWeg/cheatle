@@ -11,7 +11,7 @@ type TileProps = {
     onLockClick: () => void;
 };
 
-export function Tile(props: TileProps) {
+function TileBase(props: TileProps) {
     const { active, state, onClick, onLockClick } = props;
 
     const className = React.useMemo(
@@ -47,3 +47,5 @@ export function Tile(props: TileProps) {
         </div>
     );
 }
+
+export const Tile = React.memo(TileBase);
