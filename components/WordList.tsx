@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ForwardedRef } from "react";
 import _ from "underscore";
 
 type WordListProps = {
@@ -6,11 +6,15 @@ type WordListProps = {
     words: string[];
 };
 
-export function WordList(props: WordListProps) {
-    const { loading, words } = props;
+type WordListInternalProps = WordListProps & {
+    incomingRef?: ForwardedRef<HTMLOListElement>;
+};
+
+function WordListBase(props: WordListInternalProps) {
+    const { incomingRef, loading, words } = props;
 
     return (
-        <ol className="word-list">
+        <ol ref={incomingRef} className="word-list">
             {loading && <div className="word-list-loading">loading</div>}
             {!loading && (
                 <>
@@ -28,3 +32,7 @@ export function WordList(props: WordListProps) {
         </ol>
     );
 }
+
+export const WordList = React.forwardRef<HTMLOListElement, WordListProps>((props, ref) => (
+    <WordListBase {...props} incomingRef={ref} />
+));

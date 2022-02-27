@@ -8,7 +8,6 @@ import { Row } from "../components/Row";
 import { WordList } from "../components/WordList";
 import { useBoardState } from "../hooks/useBoardState";
 import { BSA_BKSP, BSA_LETTER, BSA_RESET, RowState, TileState } from "../typings/RowState";
-import { FindSuccess } from "./api/find";
 
 const KeyboardLayout = {
     default: ["Q W E R T Y U I O P", "A S D F G H J K L", "Z X C V B N M {bksp}"]
@@ -37,6 +36,8 @@ function fetchWords(words: string[], masks: string[]): Promise<string[]> {
 function Home() {
     const keyboard = React.useRef();
     const setKeyboardRef = React.useCallback((ref) => (keyboard.current = ref), []);
+
+    const list = React.useRef<HTMLOListElement>(null);
 
     const [loading, setLoading] = React.useState<boolean>(false);
     const [words, setWords] = React.useState<string[]>([]);
@@ -99,6 +100,7 @@ function Home() {
 
         fetchPromise
             .then(setWords)
+            .then(() => list.current?.scrollIntoView({ behavior: "smooth" }))
             .catch((err) => alert(err.message))
             .finally(() => setLoading(false));
     }, [state?.rows]);
@@ -178,10 +180,10 @@ function Home() {
     return (
         <div className="content">
             <h1 className="title">cheatle</h1>
-            {state?.rows?.map((row, i) => (
+            {state?.rows?.map((_row, i) => (
                 <Row key={i} index={i} />
             ))}
-            <WordList loading={loading} words={words} />
+            <WordList ref={list} loading={loading} words={words} />
             <div className="keyboard-container">
                 <div className="w-full lg:w-2/5 mx-auto pt-3 pb-2 px-5 flex bg-nord4 dark:bg-nord2 rounded-md rounded-b-none">
                     <button
