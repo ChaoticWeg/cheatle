@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { default as wordsData } from "../../data/words.json";
 import _ from "underscore";
+import { default as wordsData } from "../../data/words.json";
 
 type FindSuccess = { ok: boolean; words: string[] };
 type FindFailure = { ok: boolean; message: string };

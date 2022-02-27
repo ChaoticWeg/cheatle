@@ -1,12 +1,11 @@
 import React from "react";
-import _ from "underscore";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
+import _ from "underscore";
 import { Row } from "../components/Row";
+import { WordList } from "../components/WordList";
 import { useBoardState } from "../hooks/useBoardState";
 import { BSA_BKSP, BSA_LETTER, BSA_RESET, RowState, TileState } from "../typings/RowState";
-import { WordList } from "../components/WordList";
-import clsx from "clsx";
 
 const KeyboardLayout = {
     default: ["Q W E R T Y U I O P", "A S D F G H J K L", "Z X C V B N M {bksp}"]
