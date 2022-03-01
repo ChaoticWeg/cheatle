@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .row {
+        @apply grid grid-cols-5 gap-1;
+        @apply max-w-sm md:max-w-md mx-auto pt-1;
+    }
+
+    .tile-container {
+        @apply flex flex-col mb-4;
+    }
+
+    .tile {
+        @apply border-2 border-nord3 dark:border-nord2 rounded-lg;
+        @apply bg-nord5 dark:bg-nord1;
+        @apply text-nord3 dark:text-nord4;
+        @apply flex justify-center items-center h-16 md:h-20 mb-2;
+        @apply text-center text-3xl uppercase select-none;
+        @apply transition-colors ease-in-out duration-75;
+        @apply cursor-pointer;
+    }
+
+    .tile > span {
+        @apply lg:mb-1;
+    }
+
+    .tile-active {
+        @apply bg-nord6 dark:bg-nord2;
+        @apply border-nord9 dark:border-nord6;
+        @apply shadow-md dark:shadow-sm shadow-nord4 dark:shadow-nord1;
+    }
+
+    .tile-lock {
+        @apply bg-nord7 dark:text-nord0;
+    }
+
+    .tile-softlock {
+        @apply bg-nord13 dark:text-nord0;
+    }
+
+    .tile-icon-buttons {
+        @apply w-full h-10 rounded-lg;
+        @apply bg-nord6 dark:bg-nord2;
+        @apply hover:bg-nord5 dark:hover:bg-nord3;
+        @apply border border-nord4 dark:border-nord2;
+        @apply drop-shadow-sm shadow-nord4 dark:shadow-nord1;
+        @apply transition-colors ease-in-out duration-100;
+        @apply flex items-center;
+        @apply cursor-pointer;
+    }
+
+    .lock-icon {
+        @apply text-nord0 dark:text-nord6;
+        @apply flex h-1/2 mx-auto mb-1;
+    }
+}

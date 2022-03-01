@@ -4,12 +4,14 @@ import {
     SearchIcon,
     TrashIcon
 } from "@heroicons/react/solid";
+import { InformationCircleIcon } from "@heroicons/react/outline";
 import clsx from "clsx";
 import React from "react";
 import toast from "react-hot-toast";
 import Keyboard from "react-simple-keyboard";
 import "react-simple-keyboard/build/css/index.css";
 import _ from "underscore";
+import { Help } from "../components/Help";
 import { Row } from "../components/Row";
 import { WordList } from "../components/WordList";
 import { useBoardState } from "../hooks/useBoardState";
@@ -48,6 +50,21 @@ function Home() {
     const [showGoTop, setShowGoTop] = React.useState<boolean>(false);
     const [loading, setLoading] = React.useState<boolean>(false);
     const [words, setWords] = React.useState<string[]>([]);
+
+    const [helpOpen, setHelpOpen] = React.useState<boolean>(false);
+
+    React.useEffect(() => {
+        setTimeout(() => {
+            const hasHelpBeenShown = JSON.parse(
+                localStorage.getItem("@cheatle/helpShown") ?? JSON.stringify(false)
+            );
+
+            if (!hasHelpBeenShown) {
+                localStorage.setItem("@cheatle/helpShown", JSON.stringify(true));
+                setHelpOpen(true);
+            }
+        }, 1);
+    }, []);
 
     const { state, dispatch } = useBoardState();
 
@@ -216,46 +233,58 @@ function Home() {
     }, [showGoTop]);
 
     return (
-        <div className="content">
-            <h1 className="title">cheatle</h1>
-            {state?.rows?.map((_row, i) => (
-                <Row key={i} index={i} />
-            ))}
-            <WordList ref={list} loading={loading} words={words} />
-            <div className="keyboard-container">
-                <div className="w-full lg:w-2/5 mx-auto pt-3 pb-2 px-5 flex bg-nord4 dark:bg-nord2 rounded-md rounded-b-none">
-                    <div className="mr-auto">
-                        <button className="bg-nord11 hover:bg-nord15" onClick={onClearPress}>
-                            <TrashIcon className="h-7" />
-                        </button>
+        <>
+            <div className="content">
+                <h1 className="title">cheatle</h1>
+                {state?.rows?.map((_row, i) => (
+                    <Row key={i} index={i} />
+                ))}
+                <WordList ref={list} loading={loading} words={words} />
+                <div className="keyboard-container">
+                    <div className="w-full lg:w-2/5 mx-auto pt-3 pb-2 px-5 flex bg-nord4 dark:bg-nord2 rounded-md rounded-b-none">
+                        <div className="flex mr-auto">
+                            <button
+                                className="bg-nord11 hover:bg-nord15 mr-2"
+                                onClick={onClearPress}
+                            >
+                                <TrashIcon className="h-7" />
+                            </button>
+                            <button
+                                className="bg-nord7 hover:bg-nord8"
+                                onClick={() => setHelpOpen(true)}
+                            >
+                                <InformationCircleIcon className="h-6" />
+                            </button>
+                        </div>
+                        <div className="flex ml-auto">
+                            <button
+                                className="mr-2"
+                                onClick={showGoTop ? onGoTopPress : onGoWordsPress}
+                            >
+                                <ChevronDoubleDownIcon className={navIconClassName} />
+                            </button>
+                            <button onClick={onFindPress}>
+                                <SearchIcon className="h-7" />
+                            </button>
+                        </div>
                     </div>
-                    <div className="ml-auto">
-                        <button
-                            className="mr-2"
-                            onClick={showGoTop ? onGoTopPress : onGoWordsPress}
-                        >
-                            <ChevronDoubleDownIcon className={navIconClassName} />
-                        </button>
-                        <button onClick={onFindPress}>
-                            <SearchIcon className="h-7" />
-                        </button>
-                    </div>
-                </div>
-                <div className="w-full lg:w-2/5 mx-auto">
-                    <Keyboard
-                        disableButtonHold
-                        display={KeyboardDisplay}
-                        keyboardRef={setKeyboardRef}
-                        layout={KeyboardLayout}
-                        onKeyPress={onSoftKeyPress}
-                        physicalKeyboardHighlight
-                    />
-                    <div className="version">
-                        <span>v{process.env.NEXT_PUBLIC_VERSION ?? "0.0.0"}</span>
+                    <div className="w-full lg:w-2/5 mx-auto">
+                        <Keyboard
+                            disableButtonHold
+                            display={KeyboardDisplay}
+                            keyboardRef={setKeyboardRef}
+                            layout={KeyboardLayout}
+                            onKeyPress={onSoftKeyPress}
+                            physicalKeyboardHighlight
+                        />
+                        <div className="version">
+                            <span>v{process.env.NEXT_PUBLIC_VERSION ?? "0.0.0"}</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            <Help open={helpOpen} onClose={() => setHelpOpen(false)} />
+        </>
     );
 }
 

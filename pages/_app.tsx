@@ -1,10 +1,13 @@
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import React from "react";
 import { Toaster } from "react-hot-toast";
 import { BoardStateProvider } from "../hooks/useBoardState";
 import "../styles/globals.css";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp(props: AppProps) {
+    const { Component, pageProps } = props;
+
     return (
         <BoardStateProvider>
             <Head>
@@ -14,7 +17,9 @@ function MyApp({ Component, pageProps }: AppProps) {
                 />
                 <title>cheatle</title>
             </Head>
-            <Component {...pageProps} />
+            <main>
+                <Component {...pageProps} />
+            </main>
             <Toaster />
         </BoardStateProvider>
     );

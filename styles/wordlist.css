@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.cheatle-text {
+    @apply text-nord0 dark:text-nord6;
+}
+
+@layer components {
+    .word-list {
+        @apply w-full lg:w-1/2 mx-auto mb-6 px-5 pt-2;
+        @apply grid grid-cols-4 lg:grid-cols-5 gap-2;
+        @apply text-center;
+    }
+
+    .word-list-word {
+        @apply py-2 rounded-md;
+        @apply bg-nord1 text-nord0 dark:text-nord6;
+    }
+
+    .word-list-empty {
+        @apply col-span-4 lg:col-span-5;
+        @apply text-nord3 dark:text-nord4;
+    }
+
+    .word-list-loading {
+        @apply word-list-empty;
+        @apply dark:text-nord2 dark:shadow-md;
+    }
+}
