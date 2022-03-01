@@ -15,7 +15,7 @@
 
     .word-list-word {
         @apply py-2 rounded-md;
-        @apply bg-nord1 text-nord0 dark:text-nord6;
+        @apply bg-nord5 dark:bg-nord1 text-nord0 dark:text-nord6;
     }
 
     .word-list-empty {
