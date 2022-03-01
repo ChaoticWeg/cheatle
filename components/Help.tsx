@@ -59,7 +59,7 @@ export function Help(props: HelpProps) {
                         <div className="help-content-main">
                             <p>
                                 Just like <a href="https://powerlanguage.co.uk/wordle/">Wordle</a>,
-                                there's a grid of 6 rows of 5 tiles. Here, you can enter your
+                                there&#39;s a grid of 6 rows of 5 tiles. Here, you can enter your
                                 guesses and use the lock button underneath each tile to change
                                 colors based on what Wordle tells you about the guess.
                             </p>
@@ -70,21 +70,30 @@ export function Help(props: HelpProps) {
                             </p>
                             <p>
                                 <span className="font-semibold">
-                                    Cheatle isn't going to help you <i>too</i> much, though!
+                                    Cheatle isn&#39;t going to help you <i>too</i> much, though!
                                 </span>{" "}
                                 The list of words is sorted alphabetically, <i>not</i> in any
-                                particular order of quality. There's no{" "}
-                                <a href="https://youtu.be/v68zYyaEmEA" title="3b1b" target="_blank">
+                                particular order of quality. There&#39;s no{" "}
+                                <a
+                                    href="https://youtu.be/v68zYyaEmEA"
+                                    title="3b1b"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     information theory
                                 </a>{" "}
-                                or other fancy math or stats involved here. You'll still have to use
-                                your noodle to choose one.
+                                or other fancy math or stats involved here. You&#39;ll still have to
+                                use your noodle to choose one.
                             </p>
                             <p>
                                 Input is just like Wordle.
                                 <br />
                                 Report bugs on{" "}
-                                <a href="https://github.com/chaoticweg/cheatle" target="_blank">
+                                <a
+                                    href="https://github.com/chaoticweg/cheatle"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                >
                                     GitHub
                                 </a>
                                 .
@@ -97,6 +106,7 @@ export function Help(props: HelpProps) {
                                 className="inline-block mt-1.5 mr-auto ml-1"
                                 href="https://github.com/chaoticweg/cheatle"
                                 target="_blank"
+                                rel="noreferrer"
                             >
                                 <CodeIcon className="h-6" />
                             </a>
